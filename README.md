@@ -17,6 +17,6 @@ The app is launched in streamlit.io. If you have a streamlit account, you will b
 This app is developed using Python 3.9 version.
 
 Instructions for launching the app:
-	1. Install Python 3.9 and dependencies mentioned in requirement.txt
-	2. Download all files given in the repositories
-	3. Execute the following command in terminal to launch the app: streamlit run main.py
+ 1. Install Python 3.9 and dependencies mentioned in requirement.txt
+ 2. Download all files given in the repositories
+ 3. Execute the following command in terminal to launch the app: streamlit run main.py
