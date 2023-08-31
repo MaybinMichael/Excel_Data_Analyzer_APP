@@ -1,5 +1,6 @@
 # Excel_Data_Analyzer_APP
 This app helps users to analyze data and to get insights and recommendations!
+
 Functionalities:
   1. User is able to upload Excel file (.xlsx, .xls formats).
   2. Data cleaning and imputation can be performed
@@ -8,4 +9,14 @@ Functionalities:
   5. User can post queries on the app.
   6. Help section is enabled so that user gets directions
   7. User friendly UI is enabled
-  8. 
+
+Video demonstration of the app is available in the following link: https://www.youtube.com/watch?v=XRNJZS8FnVo
+
+The app is launched in streamlit.io. If you have a streamlit account, you will be able to access the app here https://data-analytics.streamlit.app/
+
+This app is developed using Python 3.9 version.
+
+Instructions for launching the app:
+ 1. Install Python 3.9 and dependencies mentioned in requirement.txt
+ 2. Download all files given in the repositories
+ 3. Execute the following command in terminal to launch the app: streamlit run main.py
