@@ -9,4 +9,6 @@ Functionalities:
   6. Help section is enabled so that user gets directions
   7. User friendly UI is enabled
 
+Video demonstration of the app is available in the following link: https://www.youtube.com/watch?v=XRNJZS8FnVo
+
 This app is developed using Python 3.9 version.
