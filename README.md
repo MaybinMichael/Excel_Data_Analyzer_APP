@@ -8,4 +8,5 @@ Functionalities:
   5. User can post queries on the app.
   6. Help section is enabled so that user gets directions
   7. User friendly UI is enabled
-  8. 
+
+This app is developed using Python 3.9 version.
