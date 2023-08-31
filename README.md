@@ -11,4 +11,7 @@ Functionalities:
 
 Video demonstration of the app is available in the following link: https://www.youtube.com/watch?v=XRNJZS8FnVo
 
+The app is launched in streamlit.io. If you have a streamlit account, you will be able to access the app here https://data-analytics.streamlit.app/
+Files are available in GitHub.
+
 This app is developed using Python 3.9 version.
