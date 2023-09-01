@@ -5,8 +5,8 @@ import logging
 #import logging.config
 
 try:
-    if "session" not in st.session_state:
-        st.session_state.session=True
+    if "session_show_data" not in st.session_state:
+        st.session_state.session_show_data=False
     #create logger
     logging.basicConfig(filename = "log_file",
                         filemode='a',
@@ -37,10 +37,11 @@ try:
 
     # Show data
     show_data_call = st.button("Show Data", key="show1")
-    if show_data_call:
+    if show_data_call or st.session_state.session:
         data=da.df
         st.dataframe(data)
         logger.info("performed Show Data")
+        st.session_state.session_show_data=True
 
     # Ask query
     user_query = st.text_input("Post your query ")
