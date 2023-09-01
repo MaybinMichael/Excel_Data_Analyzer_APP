@@ -1,8 +1,19 @@
 import streamlit as st
 from backend_analytics_engine import Data_Analytics
 import io
+import logging
+#import logging.config
 
 try:
+    #create logger
+    logging.basicConfig(filename = "log_file",
+                        filemode='a',
+                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                        datefmt='%H:%M:%S',
+                        level=logging.DEBUG)
+    logger = logging.getLogger('Front-end:')
+    #logger.info("\n\nNew session started")
+
     # Add App TiTle
     st.title("Excel Data Analyzer")
     st.text("This app helps you to analyze data and to get insights and recommendations!")
@@ -10,19 +21,27 @@ try:
     # Upload File
     file_uploaded = st.file_uploader("Choose a file...",
                                      help="Upload files with format such as .xlsx and .xls")
+    logger.debug("file_uploaded status BEFORE: "+ str(file_uploaded))
     if file_uploaded != None:
+        logger.debug("File_uploaded type: " + str(type(file_uploaded)))
         da = Data_Analytics()
         output = da.read_document(file_uploaded)
+        file_uploaded = None
+        logger.debug("file_uploaded status AFTER: "+ str(file_uploaded))
         if output["error_code"]== 0:
             st.success("File upload is successful")
+            logger.info("File upload is successful")
         else:
             st.error(output["status_msg"])
+            logger.error(output["status_msg"])
+
 
     # Show data
     show_data_call = st.button("Show Data", key="show1")
     if show_data_call:
-        _data=da.df
-        st.dataframe(_data)
+        data=da.df
+        st.dataframe(data)
+        logger.info("performed Show Data")
 
     # Ask query
     user_query = st.text_input("Post your query ")
@@ -33,19 +52,20 @@ try:
         Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
         Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt 
         mollit anim id est laborum.""")
+        logger.info("Query posted by the user")
 
     # Check data integrity
     st.subheader("Check data integrity", divider='rainbow')
     data_integrity_check_call = st.button("Check Data Integrity")
     if data_integrity_check_call:
         output = da.check_data_integrity()
+        logger.info("Call for data integrity check")
         if output["error_code"]==0:
             st.dataframe(output["output"]["data_missingness"])
+            logger.info("performed data integrity check")
         else:
             st.error(output["status_msg"])
-        print("session state: ")
-        for i in st.session_state:
-            print("session state: ", i)
+            logger.error(output["status_msg"])
 
     # Imputation
     st.subheader("Data Cleansing", divider='rainbow')
@@ -65,6 +85,13 @@ try:
     remove_foreign_rows = st.toggle("Remove rows with foreign values")
     perform_imputation = st.button("Perform imputation/ Remove missing or foreign values")
     if perform_imputation:
+        logger.info("call for performing imputation/ Remove missing or foreign values")
+        logger.debug("remove_missing_rows_continuous: ", str(remove_missing_rows_continuous),
+                                    "\nremove_missing_rows_categorical: ", str(remove_missing_rows_categorical),
+                                    "\nremove_foreign_rows: ",str(remove_foreign_rows),
+                                    "\nimpute_missing_rows_continuous: ",str(impute_missing_rows_continuous),
+                                    "\nimpute_missing_rows_categorical: ",str(impute_missing_rows_categorical)
+                                    )
         output = da.keep_data_integrity(remove_missing_rows_continuous=remove_missing_rows_continuous,
                                     remove_missing_rows_categorical=remove_missing_rows_categorical,
                                     remove_foreign_rows=remove_foreign_rows,
@@ -73,9 +100,10 @@ try:
                                     )
         if output["error_code"]==0:
             st.success(output["status_msg"])
+            logger.info(output["status_msg"])
         else:
             st.error(output["status_msg"])
-
+            logger.error(output["status_msg"])
     def convert_df(df):
         return df.to_csv().encode('utf-8')
 
@@ -83,6 +111,7 @@ try:
     st.subheader("Descriptive analytics", divider='rainbow')
     descriptive_analytics_call = st.button("Perform Descriptive Analytics")
     if descriptive_analytics_call:
+        logger.info("call for descriptive analytics")
         output = da.describe_data()
         if output["error_code"]==0:
             st.dataframe(output["output"]["cont_data_summary"])
@@ -97,6 +126,7 @@ try:
                                            file_name='categorical_data_summary.csv')
         else:
             st.error(output["status_msg"])
+            logger.error(output["status_msg"])
 
     # Insights from graphs
     st.subheader("Visualization", divider='rainbow')
@@ -113,20 +143,24 @@ try:
     # Show distribution
     show_distribution_flag = st.checkbox("Show distribution of features")
     if show_distribution_flag:
+        logger.info("call for distribution plot")
         features=set(da.cont_var)
         feature = st.selectbox("Choose a feature", features, key="distribution_graph")
         output = da.show_distribution(feature=feature)
         if output["error_code"] ==0:
             st.plotly_chart(output["output"])
+            logger.info("distribution plot generated")
             # Download image
             download_img(output["output"], "Distribution_plot.pdf")
         else:
             st.error(output["status_msg"])
+            logger.error(output["status_msg"])
 
     # Show trend
     st.divider()
     show_trend_flag = st.checkbox("Show trend of features")
     if show_trend_flag:
+        logger.info("call for trend plot")
         col1, col2 = st.columns(2)
         with col1:
             x_feature = st.radio("Choose x-axis", da.cont_var)
@@ -136,24 +170,29 @@ try:
                                y_feature=y_feature)
         if output["error_code"] ==0:
             st.plotly_chart(output["output"])
+            logger.info("trend plot generated")
             # Download image
             download_img(output["output"], "Trend_plot.pdf")
         else:
             st.error(output["status_msg"])
+            logger.error(output["status_msg"])
 
     # Show outliers
     st.divider()
     show_outliers_flag = st.checkbox("Show outliers of data feature-wise")
     if show_outliers_flag:
+        logger.info("call for outlier plot")
         features_set = set(da.cont_var)
         feature_for_outliers = st.selectbox("Choose a feature", features_set, key="outlier_graph")
         output = da.show_outliers(feature=feature_for_outliers)
         if output["error_code"] == 0:
             st.plotly_chart(output["output"])
+            logger.info("outlier plot generated")
             # Download image
             download_img(output["output"], "outliers_plot.pdf")
         else:
             st.error(output["status_msg"])
+            logger.error(output["status_msg"])
     st.divider()
 
     # Outlier removal and imputation
@@ -169,6 +208,7 @@ try:
                       step=0.1)
         start_call = st.button("Start")
         if start_call:
+            logger.info("call for outlier removal")
             output = da.outlier_removal_imputation(
                                     remove_outliers = show_outlier_flag,
                                     imputation_method = imputation_method,
@@ -179,7 +219,9 @@ try:
                                     )
             if output["error_code"] ==0:
                 st.success(output["status_msg"])
+                logger.info(output["status_msg"])
             else:
                 st.error(output["status_msg"])
+                logger.error(output["status_msg"])
 except Exception as e:
-    print (e)
+    print(e)
