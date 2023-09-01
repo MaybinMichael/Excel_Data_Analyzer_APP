@@ -5,8 +5,6 @@ import logging
 #import logging.config
 
 try:
-    if "session_show_data" not in st.session_state:
-        st.session_state.session_show_data=False
     #create logger
     logging.basicConfig(filename = "log_file",
                         filemode='a',
@@ -14,7 +12,7 @@ try:
                         datefmt='%H:%M:%S',
                         level=logging.DEBUG)
     logger = logging.getLogger('Front-end:')
-    #logger.info("\n\nNew session started")
+    logger.info("\n\nNew session started")
 
     # Add App TiTle
     st.title("Excel Data Analyzer")
@@ -37,11 +35,10 @@ try:
 
     # Show data
     show_data_call = st.button("Show Data", key="show1")
-    if show_data_call or st.session_state.session:
+    if show_data_call:
         data=da.df
         st.dataframe(data)
         logger.info("performed Show Data")
-        st.session_state.session_show_data=True
 
     # Ask query
     user_query = st.text_input("Post your query ")
