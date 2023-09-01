@@ -5,6 +5,8 @@ import logging
 #import logging.config
 
 try:
+    if "session" not in st.session_state:
+        st.session_state.session=True
     #create logger
     logging.basicConfig(filename = "log_file",
                         filemode='a',
@@ -21,13 +23,10 @@ try:
     # Upload File
     file_uploaded = st.file_uploader("Choose a file...",
                                      help="Upload files with format such as .xlsx and .xls")
-    logger.debug("file_uploaded status BEFORE: "+ str(file_uploaded))
     if file_uploaded != None:
-        logger.debug("File_uploaded type: " + str(type(file_uploaded)))
         da = Data_Analytics()
         output = da.read_document(file_uploaded)
         file_uploaded = None
-        logger.debug("file_uploaded status AFTER: "+ str(file_uploaded))
         if output["error_code"]== 0:
             st.success("File upload is successful")
             logger.info("File upload is successful")
