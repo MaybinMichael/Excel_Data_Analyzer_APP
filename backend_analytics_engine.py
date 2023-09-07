@@ -223,8 +223,8 @@ class Data_Analytics():
             return self.return_status(105, status_msg, error_trace)
         
         # Return updated df after resetting categ and cont var lists
-        self.cont_var = self.df.select_dtypes(exclude = ['object', 'datetime64[ns]'])
-        self.categ_var = self.df.select_dtypes(include = ['object'], exclude = ['datetime64[ns]'])
+        self.cont_var = self.df.select_dtypes(exclude = ['object', 'datetime64[ns]']).columns
+        self.categ_var = self.df.select_dtypes(include = ['object'], exclude = ['datetime64[ns]']).columns
         return self.return_status(0, status_msg, output=self.df)
     
     def describe_data(self):
@@ -380,15 +380,16 @@ class Data_Analytics():
                     self.df.loc[(self.df[k] < d[0]) | (self.df[k] > d[1]), k] = np.nan
                 status_msg = status_msg + " Outlier removal is performed."
                 # Perform imputation
-                if imputation_method != []: 
-                    if imputation_method[i] == 'mean':
-                        self.df[k].fillna(value=self.df[k].mean(), inplace=True)
-                    elif imputation_method[i] == 'median':
-                        self.df[k].fillna(value=self.df[k].median(), inplace=True)
-                    status_msg = status_msg + " Imputation is performed."
-                else:
-                    #perform extreme value capping
-                    pass
+                for k in selected_columns:
+                    if imputation_method != []:
+                        if imputation_method[i] == 'mean':
+                            self.df[k].fillna(value=self.df[k].mean(), inplace=True)
+                        elif imputation_method[i] == 'median':
+                            self.df[k].fillna(value=self.df[k].median(), inplace=True)
+                        status_msg = status_msg + " Imputation is performed."
+                    else:
+                        #perform extreme value capping
+                        pass
             return self.return_status(0, status_msg)
 
         except:
