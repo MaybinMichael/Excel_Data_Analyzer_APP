@@ -386,10 +386,11 @@ class Data_Analytics():
                             self.df[k].fillna(value=self.df[k].mean(), inplace=True)
                         elif imputation_method[i] == 'median':
                             self.df[k].fillna(value=self.df[k].median(), inplace=True)
-                        status_msg = status_msg + " Imputation is performed."
+
                     else:
                         #perform extreme value capping
                         pass
+                status_msg = status_msg + " Imputation is performed."
             return self.return_status(0, status_msg)
 
         except:
